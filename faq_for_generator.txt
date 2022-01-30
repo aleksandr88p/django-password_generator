@@ -1,0 +1,91 @@
+Add an App to a Project
+python manage.py startapp appname
+
+Starting the server
+python manage.py runserver
+
+Creating Migrations
+python3 manage.py makemigrations
+
+Migrate the Database
+python3 manage.py migrate
+
+Creating a Super User for the Admin Panel
+python3 manage.py createsuperuser
+
+Change Any User's Password
+python3 manage.py changepassword
+
+Collecting Static Files Into One Folder
+python3 manage.py collectstatic
+*******************************************************************
+
+
+для лучшей ориентации в папках, дописать родительской папке с названием проекта _project
+
+вводим к терминале python manage.py startapp generator для создания приложения,
+в этом проекте будет только одно приложение, потому что это простой генератор паролей
+что бы заставить работать это приложение нужно добавить его данные в файл settings.py находим
+там список INSTALLED_APPS, добалвяем новое приложение с новой строки 'generator'
+
+что бы добавить возможные варианты адресса сайта в главной папке проекта переходим в файл urls.py
+именно там происходит поиск заданного адреса. В джанго адреса определяются функцией path, там уже есть одна
+котрая принимает содержимое адресной строки вводимой пользователем и параметр admin. .(котрый позволяет
+рабоать с разными установками
+что бы сделать еще одну, в списке urlpatterns добавляем еще path('адресная строка', views приложения)
+для этого в приложении в файлк views
+импортируем from django.http import HttpResponse
+и создаем
+def название(requests):
+    return HttpResponse("Текст")
+
+
+Templates(шаблоны) используются для упрощения создания дизайна сайтов, они позволяют представлять html код
+В данном случае, для создания шаблона генератора паролей, нам нужен шаблон для отображения случайных символов
+С помощью шаблона можно определить любые настройки, цвет текста или фона, форма кнопок и т.д.
+Для шаблонов нужно создать папку в проекте, именно там где надо, в данном случае в папке с приложением
+для генерации паролей generator>templates>generator(и еще одну папку с названием приложения)
+Далее в этой папке создаем файл home.html, затем в файле views в функции возврата текста def home
+удаляем HttpResponse("Hello there friends") а вместо этого используем render из django
+будет так:
+def home(request):
+    # return HttpResponse("Hello there friends") --- было
+    return render(request, 'generator/home.html') --- стало (в ковычках адрес шаблона)
+
+еще можно передовать инфорамации из views.py сразу в шаблоны
+для этого добаляем словаряь в ретурн функции например
+def home(request):
+    # return HttpResponse("Hello there friends")
+    return render(request, 'generator/home.html', {'password': 'abra-kadabra'})
+
+а в home.html добавляем {{ password }} и оставляем внутри по пробелу с каждой стороны(но это все для пробы)
+5)  Делаем форму! в файле home.html тег form в нем select несколько option,
+несколько checkbox и input"submit"
+5.1) что бы форма отправляла на другую страницу после сабмита, в action пишем имя html файла на котрый надо
+перейти в данном случае password
+в views.py нужно добавть
+def password(request):
+    return render(request, 'generator/password.html')
+и в urls.py в urlpatterns добавляем path('password', views.password),
+5.2) или в файле home.html в форме на запрос создать урл в ссылке {{ ссылка }} в сслыку вписать 'password'
+<form action="{% url 'password' %}">,
+в файле urls.py запрос будет искать путь в path('password', views.password, name='password')
+с параметром name
+
+6) что бы на новой странице выводить сгенерированный пароль нужно в файле html нужной страницы
+в двойных фигурных скобках написать имя ключа словаря, значение которого и отобразится на экране
+в view.py в  параметры вьюшки в рендер добавляем словарь имя то котороый будет вызываться и значение(то что
+отобразится на экране)
+там же пропишем логику генерации пароля, все информация о пороле(кол-во символов, регистр, и т.д находится
+в requests)
+например ищем длину что бы получить эту информацию запишем в переменную
+length = request.GET.get('length') информация будет в формате строки
+7) в кратце как создать страницу
+-urls.py в список добавляем path('about', views.about, name='about')
+-views.py пишем вьюшку в рендер добавляем адрес к шаблону html
+-пишем html в шаблоны
+
+8)добавляем bootstrap копируем ссылку css и добавляем на старницу home.html
+
+git config --global user.name "Aleksandr88p"
+ 
