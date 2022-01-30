@@ -88,4 +88,3 @@ length = request.GET.get('length') информация будет в форма
 8)добавляем bootstrap копируем ссылку css и добавляем на старницу home.html
 
 git config --global user.name "Aleksandr88p"
- 
